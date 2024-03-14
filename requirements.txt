@@ -1,0 +1,8 @@
+pygame
+numpy
+torchvision
+torch
+# pillow
+# tqdm
+# einops
+# wandb
