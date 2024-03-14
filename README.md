@@ -2,7 +2,7 @@
 
 Dissertation and Graduation Design of Master's degree in University of Nottingham, using as many skills as possible to complete it. 
 
-## Techs
+## 🛞Techs
 
 ### Compulsory
 
@@ -21,3 +21,21 @@ This project will focus on managing a stream of hundreds of intelligent vehicles
 - 3D modeling in VR world
 - Advanced algorithms and machine learning 
 - Data visualization at management dashboard
+
+## 🛠️ Installation
+
+Install the remaining dependencies:
+```
+python -m pip install -r requirements.txt
+```
+### 🔎 Unit tests 
+Run the tests using :
+```
+pytest tests/
+```
+
+While the project will grow, more test will be added and you'll maybe need to just select a subset of tests related to the changes you made by using the `-k` option of `pytest`. Running tests in parallel (in the example 4 processes) with the `-n` option may help :
+
+```
+pytest -k "substring-to-match" -n 4 tests/
+```

@@ -1,8 +1,11 @@
 pygame
 numpy
-torchvision
-torch
-# pillow
-# tqdm
-# einops
-# wandb
+nltk
+numpy
+networkx
+geopandas
+scikit-learn
+scipy
+joblib
+threadpoolctl
+# sqlite3
