@@ -8,4 +8,9 @@ scikit-learn
 scipy
 joblib
 threadpoolctl
+# flet
 # sqlite3
+networkx
+matplotlib
+
+pygame

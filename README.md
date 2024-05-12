@@ -30,9 +30,16 @@ TBC.
 
 ### Intelligent Agent System
 
-- Environment: A random-generative map.
+- Environment: A random-generative map (Optional: traffic light, pedestrian).
 
 - Intelligent Agents: Vehicles.
+
+
+1) designing intelligent autonomous agents and an environment with which they interact, 
+(2) setting those agents a task, 
+(3) asking one or more questions about that task, and 
+(4) evaluating it using experimental methods. 
+
 
 ### Behavior Types:
 
@@ -46,11 +53,8 @@ TBC.
 
 ### Learning and Improvement: Reinforcement learning
 
-• Definition: An intelligent system encompasses an agent and its environment. It’s a broader concept that includes both the decision-making entity (the agent) and the context in which it operates (the environment).
-• Agent Role: The intelligent agent senses the environment, uses actuators to initiate actions, and conducts operations on behalf of users.
-
-
-
+- Definition: An intelligent system encompasses an agent and its environment. It’s a broader concept that includes both the decision-making entity (the agent) and the context in which it operates (the environment).
+- Agent Role: The intelligent agent senses the environment, uses actuators to initiate actions, and conducts operations on behalf of users.
 
 ## 💼 Workflow
 
@@ -73,3 +77,4 @@ pytest -k "substring-to-match" -n 4 tests/
 ```
 
 
+(
