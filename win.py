@@ -3,21 +3,23 @@ import pygame,constant,grid,star_algorithm
 
 
 
+# "Left：设置起点/终点/障碍物，右键：取消，空格：开始寻路，R：重置"
 def draw_text(win, text):
     pygame.font.init() 
     font = pygame.font.SysFont('Arial', 20)
     text_surface = font.render(text, True, constant.BLACK)  # 创建文本图像
     win.blit(text_surface, (10, constant.WIDTH + 20))  # 绘制文本图像到窗口
 
+# def draw(grid0,win,text):
 def draw(grid0,win):
     win.fill(constant.WHITE)
     for row in grid0.grid:
         for spot in row:
             spot.draw(win)
     grid0.draw_grid(win)
-    draw_text(win, "Left：设置起点/终点/障碍物，右键：取消，空格：开始寻路，R：重置")  
+    # draw_text(win, text)  
+    draw_text(win, "123")  
     pygame.display.update()
-
 
 def main(win):
     _grid = grid.Grid(constant.ROWS, constant.WIDTH)
