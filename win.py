@@ -1,30 +1,31 @@
 
 import pygame,constant,grid,star_algorithm
 
-
-
-# "Left：设置起点/终点/障碍物，右键：取消，空格：开始寻路，R：重置"
-def draw_text(win, text):
+def draw_text(win, text, pos):
     pygame.font.init() 
     font = pygame.font.SysFont('Arial', 20)
-    text_surface = font.render(text, True, constant.BLACK)  # 创建文本图像
-    win.blit(text_surface, (10, constant.WIDTH + 20))  # 绘制文本图像到窗口
+    text_surface = font.render(text, True, constant.BLACK)  
+    win.blit(text_surface, (10, pos))
 
-# def draw(grid0,win,text):
 def draw(grid0,win):
     win.fill(constant.WHITE)
     for row in grid0.grid:
         for spot in row:
             spot.draw(win)
-    grid0.draw_grid(win)
-    # draw_text(win, text)  
-    draw_text(win, "123")  
+    grid0.draw_grid(win) 
+    # pos=constant.WIDTH + 20
+    draw_text(win, "Press [R] to reset.",constant.WIDTH + 20)  
+    draw_text(win, "Press [Q] to quit.",constant.WIDTH + 70) 
+    draw_text(win, "L-click to select start, end and the barrier.",constant.WIDTH + 120) 
+    draw_text(win, "R-click to remove the point.",constant.WIDTH + 170) 
+    draw_text(win, "Press [Space] to find route.",constant.WIDTH + 220) 
+    # Press [Space] to find route 
     pygame.display.update()
 
 def main(win):
+    ifQuit=False
     
-    
-    while(1):
+    while(not ifQuit):
         _grid = grid.Grid(constant.ROWS, constant.WIDTH)
         start = None
         end = None
@@ -32,16 +33,15 @@ def main(win):
         started = False
     
         while run:
-            # _grid = grid.Grid(constant.ROWS, constant.WIDTH)
-            # draw(win, _grid, constant.ROWS, constant.WIDTH)
             draw(_grid,win)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
+                    ifQuit=True
                 if started:
                     continue        
                 
-                # LEFT click to select start, end and the barrier
+                # L-click to select start, end and the barrier
                 if pygame.mouse.get_pressed()[0]:  
                     pos = pygame.mouse.get_pos()
                     row, col = _grid.get_clicked_pos(pos, constant.ROWS, constant.WIDTH)
@@ -55,11 +55,11 @@ def main(win):
                     elif spot != end and spot != start:
                         spot.make_barrier()
 
-                 # RIGHT click to remove those point
+                 # R-click to remove those point
                 elif pygame.mouse.get_pressed()[2]: 
                     pos = pygame.mouse.get_pos()
                     row, col = _grid.get_clicked_pos(pos, constant.ROWS, constant.WIDTH)
-                    spot = _grid[row][col]
+                    spot = _grid.grid[row][col]
                     spot.reset()
                     if spot == start:
                         start = None
@@ -67,16 +67,15 @@ def main(win):
                         end = None
 
                 if event.type == pygame.KEYDOWN:
+                    # Press [r] to reset 
                     if event.key == pygame.K_r:  
-                        print("reset")
-                        
                         run = False
                         break
-                        # start = None
-                        # end = None
-                        # # _grid = _grid.reset_grid(_grid, constant.ROWS)
-                        # started = False
-
+                    # Press [Q] to quit                    
+                    if event.key == pygame.K_q:
+                        run = False
+                        ifQuit=True
+                    # Press [Space] to find route
                     elif event.key == pygame.K_SPACE and start and end:
                         for row in _grid.grid:
                             for spot in row:

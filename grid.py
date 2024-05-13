@@ -25,16 +25,8 @@ class Grid:
             for j in range(self.rows):
                 pygame.draw.line(win, constant.GREY, (j * self.gap, 0), (j * self.gap, self.width))
 
-
-
     def get_clicked_pos(self,pos, rows, width):
         y, x = pos
         row = y // self.gap
         col = x // self.gap
         return row, col
-
-    def reset_grid(self,grid, rows):
-        for row in range(rows):
-            for col in range(rows):
-                grid[row][col].reset()  
-        return grid
