@@ -38,4 +38,3 @@ class Grid:
             for col in range(rows):
                 grid[row][col].reset()  
         return grid
-
