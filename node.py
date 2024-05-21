@@ -1,5 +1,5 @@
-import constant
 import pygame
+from constant import *
 
 class Node:
     def __init__(self, row, col, width, total_rows):
@@ -7,7 +7,7 @@ class Node:
         self.col = col
         self.x = row * width
         self.y = col * width
-        self.constant = constant.WHITE
+        self.color = WHITE
         self.neighbors = []
         self.width = width
         self.total_rows = total_rows
@@ -16,64 +16,51 @@ class Node:
         return self.row, self.col
 
     def is_closed(self):
-        return self.constant == constant.RED
+        return self.color == RED
 
     def is_open(self):
-        return self.constant == constant.GREEN
+        return self.color == GREEN
 
     def is_barrier(self):
-        return self.constant == constant.BLACK
+        return self.color == BLACK
 
     def is_start(self):
-        return self.constant == constant.ORANGE
+        return self.color == ORANGE
 
     def is_end(self):
-        return self.constant == constant.TURQUOISE
+        return self.color == TURQUOISE
 
     def reset(self):
-        self.constant = constant.WHITE
+        self.color = WHITE
 
-    def make_start(self):
-        self.constant = constant.ORANGE
+    def make_start(self, color):
+        self.color = color
 
     def make_closed(self):
-        self.constant = constant.RED
+        self.color = RED
 
     def make_open(self):
-        self.constant = constant.GREEN
+        self.color = GREEN
 
     def make_barrier(self):
-        self.constant = constant.BLACK
+        self.color = BLACK
 
-    def make_end(self):
-        self.constant = constant.TURQUOISE
+    def make_end(self, color):
+        self.color = color
 
     def make_path(self):
-        self.constant = constant.PURPLE
+        self.color = PURPLE
 
     def draw(self, win):
-        pygame.draw.rect(win, self.constant, (self.x, self.y, self.width, self.width))
+        pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
     def update_neighbors(self, grid):
-        
-        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():  # 不是障碍
-            self.neighbors.append(grid[self.row - 1][self.col])  # 添加上方节点为邻居
-
-        # 仅在节点不在最后一行时检查下方节点
-        if self.row < len(grid) - 1 and not grid[self.row + 1][self.col].is_barrier():  # 不是障碍
-            self.neighbors.append(grid[self.row + 1][self.col])  # 添加下方节点为邻居
-
-        # 仅在节点不在第一列时检查左侧节点
-        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # 不是障碍
-            self.neighbors.append(grid[self.row][self.col - 1])  # 添加左侧节点为邻居
-
-        # 仅在节点不在最后一列时检查右侧节点
-        if self.col < len(grid[0]) - 1 and not grid[self.row][self.col + 1].is_barrier():  # 不是障碍
-            self.neighbors.append(grid[self.row][self.col + 1])  # 添加右侧节点为邻居
-
-    def reset(self):
-        self.is_barrier = False
-        self.is_start = False
-        self.is_end = False
-        self.is_path = False
-        self.constant = constant.WHITE
+        self.neighbors = []
+        if self.row > 0 and not grid[self.row - 1][self.col].is_barrier():  # Up
+            self.neighbors.append(grid[self.row - 1][self.col])
+        if self.row < self.total_rows - 1 and not grid[self.row + 1][self.col].is_barrier():  # Down
+            self.neighbors.append(grid[self.row + 1][self.col])
+        if self.col > 0 and not grid[self.row][self.col - 1].is_barrier():  # Left
+            self.neighbors.append(grid[self.row][self.col - 1])
+        if self.col < self.total_rows - 1 and not grid[self.row][self.col + 1].is_barrier():  # Right
+            self.neighbors.append(grid[self.row][self.col + 1])

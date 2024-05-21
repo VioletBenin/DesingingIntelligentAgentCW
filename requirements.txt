@@ -1,16 +1,1 @@
 pygame
-numpy
-nltk
-numpy
-networkx
-geopandas
-scikit-learn
-scipy
-joblib
-threadpoolctl
-# flet
-# sqlite3
-networkx
-matplotlib
-
-pygame
