@@ -1,8 +1,6 @@
 import pygame
 import constant
-import node
-
-
+import node, random
 
 class Grid:       
     def __init__(self, rows, width):
@@ -16,7 +14,17 @@ class Grid:
             for j in range(rows):
                 spot = node.Node(i, j, self.gap, rows)
                 self.grid[i].append(spot)
-        # return self
+
+        
+        # obstacle_probability=0.2
+        # # grid = []
+        # for i in range(rows):
+        #     row = []
+        #     for j in range(rows):
+        #         cell = 0 if random.random() > obstacle_probability else 1  # 0 ，1 ob
+        #         row.append(cell)
+        #     self.grid.append(row)
+        # # return grid
 
     # draw map 
     def draw_grid(self,win): 
