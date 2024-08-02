@@ -4,11 +4,16 @@ from win import draw, get_random_pos
 from star_algorithm import multi_algorithm
 from constant import *
 
+
+
 def main(win):
+    grids = [Grid(ROWS, WIDTH) for _ in range(3)]
+
     ifQuit = False
 
-    while not ifQuit:
-        _grid = Grid(ROWS, WIDTH)
+# quit windows
+    while not ifQuit:     
+        _grid = Grid(ROWS, WIDTH)       
         num_cars = 3
         starts_ends = []
 
@@ -51,7 +56,10 @@ def main(win):
                             message = "No Path Found for Some Cars"
 
 if __name__ == "__main__":
-    WIN = pygame.display.set_mode((WIDTH, WIDTH + 270))
-    pygame.display.set_caption("A* Path Finding Algorithm")
+    
+    WIN_WIDTH = WIDTH * 3  # Assuming WIDTH is the width of a single grid
+    WIN_HEIGHT = WIDTH     # Assuming the height you want is equal to the grid width
+    WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT+ 270))
+    pygame.display.set_caption("Path Finding Algorithm Across Three Grids：Cooperative A*, Priority, Genetic")
     main(WIN)
     pygame.quit()
