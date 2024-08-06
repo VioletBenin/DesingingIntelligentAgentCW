@@ -121,7 +121,7 @@ def cooperative_a_star():
 
 
 
-def initialize_population(start, goal, population_size=grid_cells*grid_cells, path_length=grid_cells*grid_cells):
+def initialize_population(start, goal, population_size=grid_cells, path_length=grid_cells):
     import random
     population = []
     for _ in range(population_size):
