@@ -1,53 +1,4 @@
-import pygame
-import random
 from heapq import heappop, heappush
-from collections import deque, defaultdict
-
-# window settings
-# cell_size = 1
-cell_size = 10
-# grid_cells = 200
-grid_cells = 50
-margin = 10
-width = grid_cells * cell_size * 3 + margin * 4
-height = grid_cells * cell_size + margin * 2
-screen = pygame.display.set_mode((width, height))
-window_caption = "Three Multi-Robots Path Planning Algorithm Visual Demonstrations"
-
-# color setting
-black = (0, 0, 0)
-white = (255, 255, 255)
-red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
-
-# 10-30
-obstacles_rate = 15
-obstacles = {(random.randint(0, grid_cells - 1), random.randint(0, grid_cells - 1)) for _ in range(grid_cells * obstacles_rate)}
-
-start_point = (0, 0)
-goal_point = (grid_cells - 1, grid_cells - 1)
-
-def draw_grid(x_offset, path=None, color=black):
-    for x in range(grid_cells):
-        for y in range(grid_cells):
-            rect = pygame.Rect(x * cell_size + x_offset, y * cell_size + margin, cell_size, cell_size)
-            pygame.draw.rect(screen, black, rect, 1) 
-            if path and (x, y) in path:
-                pygame.draw.rect(screen, color, rect)  
-
-def draw_obstacles(x_offset, obstacles, color=black):
-    for x, y in obstacles:
-        rect = pygame.Rect(x * cell_size + x_offset, y * cell_size + margin, cell_size, cell_size)
-        pygame.draw.rect(screen, color, rect)  
-
-robot_number = 5
-
-robots = []
-for _ in range(robot_number):
-    start = (random.randint(0, grid_cells - 1), random.randint(0, grid_cells - 1))
-    goal = (random.randint(0, grid_cells - 1), random.randint(0, grid_cells - 1))
-    robots.append({'start': start, 'goal': goal})
 
 def heuristic(a, b):
     return abs(b[0] - a[0]) + abs(b[1] - a[1])
@@ -126,6 +77,7 @@ def yen_k_shortest_paths(start, goal, obstacles, grid_cells, K):
         cost, path = heappop(B)
         A.append(path)
     
+    # return A
     return A
 
 def priority_algorithm(robots, obstacles, grid_cells, K=3):
@@ -136,61 +88,12 @@ def priority_algorithm(robots, obstacles, grid_cells, K=3):
             paths.update(path)
     return paths
 
-# cooperative A* implementation
 def cooperative_astar(start, goal, obstacles, paths, grid_cells):
-
     obstacles = obstacles.union(paths)
     return astar_path(start, goal, obstacles, grid_cells)
 
-def cooperative_a_star(robots, obstacles, grid_cells):
+def cooperative_a_star(robots, obstacles, grid_cells, K=3):
     path = set()
     for robot in robots:
         path.update(cooperative_astar(robot['start'], robot['goal'], obstacles, path, grid_cells))
     return path
-
-paths = {
-    "priority": set(),
-    "cooperative": set(),
-    "yen_k": set()
-}
-
-
-
-def main():
-
-    pygame.init()
-    pygame.display.set_caption(window_caption)
-
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-
-        screen.fill(white)
-
-        draw_obstacles(margin, obstacles, black)
-        draw_obstacles(grid_cells * cell_size + 2 * margin, obstacles, black)
-        draw_obstacles(2 * (grid_cells * cell_size + margin) + margin, obstacles, black)
-
-        if not paths["priority"]:
-            paths["priority"] = priority_algorithm(robots, obstacles, grid_cells, K=3)
-        if not paths["cooperative"]:
-            paths["cooperative"] = cooperative_a_star(robots, obstacles, grid_cells)
-        if not paths["yen_k"]:
-            yen_k_paths = set()
-            for robot in robots:
-                yen_k_paths.update(set(yen_k_shortest_paths(robot['start'], robot['goal'], obstacles, grid_cells, K=3)[0]))
-            paths["yen_k"] = yen_k_paths
-
-        draw_grid(margin, paths["priority"], red)
-        draw_grid(grid_cells * cell_size + 2 * margin, paths["cooperative"], green)
-        draw_grid(2 * (grid_cells * cell_size + margin) + margin, paths["yen_k"], blue)
-
-        pygame.display.flip()
-
-    pygame.quit()
-
-
-if __name__ == "__main__":
-    main()

@@ -1,65 +1,90 @@
 import pygame
-from grid import Grid
-from win import draw, get_random_pos
-from star_algorithm import multi_algorithm
-from constant import *
+import random
+from path_planning import priority_algorithm, cooperative_a_star, yen_k_shortest_paths
+from visualization import draw_grid, draw_obstacles
 
+grid_cells = 30
+obstacles_rate = 10 
+robots_number = 3
 
+# window settings
+cell_size = 10
+margin = 10
+width = grid_cells * cell_size * 3 + margin * 4
+# grid+margin+text
+height = grid_cells * cell_size + margin * 3 + 50  
+screen = pygame.display.set_mode((width, height))
+window_caption = "Three Multi-Robots Path Planning Algorithm Visual Demonstrations"
 
-def main(win):
-    grids = [Grid(ROWS, WIDTH) for _ in range(3)]
+# color setting
+black = (0, 0, 0)
+white = (255, 255, 255)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+grey = (128, 128, 128)
 
-    ifQuit = False
+# Generate obstacles and robots
+obstacles = {(random.randint(0, grid_cells - 1), random.randint(0, grid_cells - 1)) for _ in range(grid_cells * obstacles_rate)}
 
-# quit windows
-    while not ifQuit:     
-        _grid = Grid(ROWS, WIDTH)       
-        num_cars = 3
-        starts_ends = []
+robots = [{'start': (random.randint(0, grid_cells - 1), random.randint(0, grid_cells - 1)),
+           'goal': (random.randint(0, grid_cells - 1), random.randint(0, grid_cells - 1))} for _ in range(robots_number)]
 
-        for i in range(num_cars):
-            start = get_random_pos(_grid.grid)
-            end = get_random_pos(_grid.grid)
-            while end == start:
-                end = get_random_pos(_grid.grid)
-            starts_ends.append((start, end))
+print(robots)
 
-        for i, (start, end) in enumerate(starts_ends):
-            start.make_start(COLORS[i])
-            end.make_end(COLORS[i])
+paths = {
+    "priority": set(),
+    "cooperative": set(),
+    "yen_k": set()
+}
 
-        run = True
-        message = ""
+def main():
+    pygame.init()
+    pygame.display.set_caption(window_caption)
 
-        while run:
-            draw(_grid, win, message)
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-                    ifQuit = True
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_r:  # Reset
-                        run = False
-                        break
-                    if event.key == pygame.K_q:  # Quit
-                        run = False
-                        ifQuit = True
-                    if event.key == pygame.K_SPACE:
-                        for row in _grid.grid:
-                            for spot in row:
-                                spot.update_neighbors(_grid.grid)
-                        all_paths_found = multi_algorithm(lambda: draw(_grid, win, message), _grid.grid, starts_ends)
-                        if all_paths_found:
-                            message = "All Paths Found"
-                        else:
-                            message = "No Path Found for Some Cars"
+        screen.fill(white)
+
+        draw_obstacles(screen, grid_cells, cell_size, margin, obstacles, black)
+        draw_obstacles(screen, grid_cells, cell_size, grid_cells * cell_size + 2 * margin, obstacles, black)
+        draw_obstacles(screen, grid_cells, cell_size, 2 * (grid_cells * cell_size + margin) + margin, obstacles, black)
+
+        if not paths["priority"]:
+            paths["priority"] = priority_algorithm(robots, obstacles, grid_cells, K=1)
+        if not paths["cooperative"]:
+            paths["cooperative"] = cooperative_a_star(robots, obstacles, grid_cells, K=1)
+        if not paths["yen_k"]:
+            yen_k_paths = set()
+            for robot in robots:
+                yen_k_paths.update(set(yen_k_shortest_paths(robot['start'], robot['goal'], obstacles, grid_cells, K=1)[0]))
+            paths["yen_k"] = yen_k_paths
+
+        successful_priority = sum(1 for robot in robots if (robot['goal'] in paths["priority"]))
+        successful_cooperative = sum(1 for robot in robots if (robot['goal'] in paths["cooperative"]))
+        successful_yen_k = sum(1 for robot in robots if (robot['goal'] in paths["yen_k"]))
+
+        font = pygame.font.SysFont(None, 36)
+        text_priority = font.render(f'Priority: {successful_priority}/{robots_number}', True, black)
+        text_cooperative = font.render(f'Cooperative: {successful_cooperative}/{robots_number}', True, black)
+        text_yen_k = font.render(f'Yen\'s K: {successful_yen_k}/{robots_number}', True, black)
+
+        for i, robot in enumerate(robots):
+            draw_grid(screen, grid_cells, cell_size, margin, paths["priority"], start=robot['start'], goal=robot['goal'], path_color=red, start_color=grey, goal_color=grey)
+            draw_grid(screen, grid_cells, cell_size, grid_cells * cell_size + 2 * margin, paths["cooperative"], start=robot['start'], goal=robot['goal'], path_color=green, start_color=grey, goal_color=grey)
+            draw_grid(screen, grid_cells, cell_size, 2 * (grid_cells * cell_size + margin) + margin, paths["yen_k"], start=robot['start'], goal=robot['goal'], path_color=blue, start_color=grey, goal_color=grey)
+
+        screen.blit(text_priority, (margin, grid_cells * cell_size + 2 * margin + 10))
+        screen.blit(text_cooperative, (width // 3 + margin, grid_cells * cell_size + 2 * margin + 10))
+        screen.blit(text_yen_k, (2 * width // 3 + margin, grid_cells * cell_size + 2 * margin + 10))
+
+        pygame.display.flip()
+
+    pygame.quit()
 
 if __name__ == "__main__":
-    
-    WIN_WIDTH = WIDTH * 3  # Assuming WIDTH is the width of a single grid
-    WIN_HEIGHT = WIDTH     # Assuming the height you want is equal to the grid width
-    WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT+ 270))
-    pygame.display.set_caption("Path Finding Algorithm Across Three Grids：Cooperative A*, Priority, Genetic")
-    main(WIN)
-    pygame.quit()
+    main()
