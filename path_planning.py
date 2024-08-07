@@ -76,11 +76,21 @@ def yen_k_shortest_paths(start, goal, obstacles, grid_cells, K):
         
         cost, path = heappop(B)
         A.append(path)
-    
-    # return A
+
     return A
 
-def priority_algorithm(robots, obstacles, grid_cells, K=3):
+
+
+def cooperative_astar(start, goal, obstacles, paths, grid_cells):
+    obstacles = obstacles.union(paths)
+    return astar_path(start, goal, obstacles, grid_cells)
+
+
+
+
+
+# priority_algorithm
+def priority_algorithm(robots, obstacles, grid_cells, K):
     paths = set()    
     for robot in robots:
         robot_paths = yen_k_shortest_paths(robot['start'], robot['goal'], obstacles, grid_cells, K)
@@ -88,12 +98,20 @@ def priority_algorithm(robots, obstacles, grid_cells, K=3):
             paths.update(path)
     return paths
 
-def cooperative_astar(start, goal, obstacles, paths, grid_cells):
-    obstacles = obstacles.union(paths)
-    return astar_path(start, goal, obstacles, grid_cells)
 
+# cooperative_a_star
 def cooperative_a_star(robots, obstacles, grid_cells, K=3):
     path = set()
     for robot in robots:
         path.update(cooperative_astar(robot['start'], robot['goal'], obstacles, path, grid_cells))
     return path
+
+
+
+
+# yen_k_algorithm
+def yen_k_algorithm(robots, obstacles, grid_cells, K):    
+    yen_k_paths = set()
+    for robot in robots:
+        yen_k_paths.update(set(yen_k_shortest_paths(robot['start'], robot['goal'], obstacles, grid_cells, K=1)[0]))
+    return yen_k_paths
