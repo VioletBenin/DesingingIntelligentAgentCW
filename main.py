@@ -66,8 +66,8 @@ def main():
         if not paths["yen_k"]:
             paths["yen_k"] = yen_k_algorithm(robots, obstacles, grid_cells, K=1)
 
-        print(robots)
-        print(paths)
+        # print(robots)
+        # print(paths)
         
         
         # 目标点为什么默认在路径里
@@ -75,7 +75,7 @@ def main():
         success_cooperative = sum(1 for robot in robots if (robot['goal'] in paths["cooperative"]))
         success_yen_k = sum(1 for robot in robots if (robot['goal'] in paths["yen_k"]))
 
-        print(success_priority)
+        # print(success_priority)
 
 
         draw_obstacles(screen, grid_cells, cell_size, margin, obstacles, black)
