@@ -69,8 +69,6 @@ def main():
         # print(robots)
         # print(paths)
         
-        
-        # 目标点为什么默认在路径里
         success_priority = sum(1 for robot in robots if (robot['goal'] in paths["priority"]))
         success_cooperative = sum(1 for robot in robots if (robot['goal'] in paths["cooperative"]))
         success_yen_k = sum(1 for robot in robots if (robot['goal'] in paths["yen_k"]))
@@ -89,16 +87,12 @@ def main():
         text_yen_k = font.render(f'Yen\'s K: {success_yen_k}/{robots_number}', True, black)
 
 
-
-# 只有一个有?i干么的
         # for robot in enumerate(robots):
         for i, robot in enumerate(robots):
             draw_grid(screen, grid_cells, cell_size, margin, paths["priority"], start=robot['start'], goal=robot['goal'], path_color=red, start_color=grey, goal_color=grey)
             draw_grid(screen, grid_cells, cell_size, grid_cells * cell_size + 2 * margin, paths["cooperative"], start=robot['start'], goal=robot['goal'], path_color=green, start_color=grey, goal_color=grey)
             draw_grid(screen, grid_cells, cell_size, 2 * (grid_cells * cell_size + margin) + margin, paths["yen_k"], start=robot['start'], goal=robot['goal'], path_color=blue, start_color=grey, goal_color=grey)
-
-
-
+            
         screen.blit(text_priority, (margin, grid_cells * cell_size + 2 * margin + 10))
         screen.blit(text_cooperative, (width // 3 + margin, grid_cells * cell_size + 2 * margin + 10))
         screen.blit(text_yen_k, (2 * width // 3 + margin, grid_cells * cell_size + 2 * margin + 10))
